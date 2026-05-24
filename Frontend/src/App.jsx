@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import ReactPixel from 'react-facebook-pixel';
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -107,7 +107,7 @@ const App = () => {
     <Route path='/order-confirmation' element={<ProtectedRoute><OrderConfirmationPage /></ProtectedRoute>}/>
     <Route path='/order/:id' element={<ProtectedRoute><OrderDetailsPage /></ProtectedRoute>}/>
     <Route path="/invoice/:id" element={<ProtectedRoute><InvoicePage /></ProtectedRoute>} />
-    <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+    <Route path="/wishlist" element={<Wishlist />} />
 
     <Route path='/my-orders' element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>}/>
     <Route path='/forgot-password' element={<ForgotPassword />}/>

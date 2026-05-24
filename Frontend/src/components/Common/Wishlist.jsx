@@ -1,10 +1,12 @@
 // Frontend/src/components/Common/Wishlist.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { fetchWishlistItems, fetchProductDetails, removeFromWishlist } from '../../redux/slices/productSlice';
 import { Trash2, ShoppingBag } from 'react-feather';
+
+const FALLBACK_IMAGE = 'https://via.placeholder.com/160x200?text=Product';
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -36,11 +38,15 @@ const Wishlist = () => {
         
         try {
           const results = await Promise.all(productPromises);
-          const fetchedProducts = results.map(result => result.payload);
+          const fetchedProducts = results
+            .filter((result) => result?.type === fetchProductDetails.fulfilled.type && result?.payload)
+            .map((result) => result.payload)
+            .filter(Boolean);
           setProducts(fetchedProducts);
         } catch (error) {
           console.error('Error fetching product details:', error);
           toast.error('Failed to load product details');
+          setProducts([]);
         }
       }
     };
@@ -52,7 +58,7 @@ const Wishlist = () => {
     try {
       await dispatch(removeFromWishlist({ userId: user._id, productId }));
       toast.success('Removed from wishlist');
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove from wishlist');
     }
   };
@@ -109,7 +115,7 @@ const Wishlist = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-20 w-20 flex-shrink-0">
-                          <img className="h-20 w-20 rounded-md object-cover border border-gray-100" src={product.images[0]?.url} alt={product.name} />
+                          <img className="h-20 w-20 rounded-md object-cover border border-gray-100" src={product.images?.[0]?.url || FALLBACK_IMAGE} alt={product.name || 'Product'} />
                         </div>
                         <div className="ml-4">
                           <Link to={`/product/${product._id}`} className="text-sm font-medium text-gray-900 hover:text-lv-gold transition-colors">
@@ -164,8 +170,8 @@ const Wishlist = () => {
                 <Link to={`/product/${product._id}`} className="flex-shrink-0">
                   <img 
                     className="h-28 w-24 rounded-lg object-cover border border-gray-100" 
-                    src={product.images[0]?.url} 
-                    alt={product.name} 
+                    src={product.images?.[0]?.url || FALLBACK_IMAGE} 
+                    alt={product.name || 'Product'} 
                   />
                 </Link>
                 

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { logout, openPhoneAuthModal } from '../../redux/slices/authSlice';
 import { getValidToken } from '../../utils/auth';
@@ -30,11 +29,11 @@ const ProtectedRoute = ({children, role}) => {
   }, [dispatch, isAuthenticated, location.pathname, location.search]);
 
   if(!isAuthenticated){
-    return <Navigate to="/" replace/>;
+    return null;
   }
 
   if(role && user.role !== role){
-        return <Navigate to="/" replace/>;
+        return null;
     }
 
   return children;

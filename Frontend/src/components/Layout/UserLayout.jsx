@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../Common/Header';
 import Footer from '../Common/Footer';
 import { Link, Outlet } from 'react-router-dom';
@@ -8,7 +8,7 @@ import PhoneLoginModal from '../Common/PhoneLoginModal';
 import { useLocation } from 'react-router-dom';
 
 
-const UserLayout = ({ isVisible }) => {
+const UserLayout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -19,7 +19,7 @@ const UserLayout = ({ isVisible }) => {
   const bottomNavItems = [
     { to: user ? '/profile' : null, label: 'Profile', icon: 'fa-user', action: 'profile' },
     { to: '/#categories-section', label: 'Category', icon: 'fa-th-large' },
-    { to: '/#new-arrivals-section', label: 'New Arrivals', icon: 'fa-sparkles' },
+    { to: '/collections/all', label: 'Collection', icon: 'fa-sparkles' },
     { to: '/wishlist', label: 'Wishlist', icon: 'fa-heart' },
   ];
 
@@ -79,8 +79,6 @@ const UserLayout = ({ isVisible }) => {
                     : activePath === targetPath || (targetPath !== '/' && activePath.startsWith(targetPath)))
                   : activePath.startsWith('/profile');
 
-                const isNewArrivals = item.label === 'New Arrivals';
-
                 const textClass = 'font-sans text-[11px] font-semibold uppercase tracking-[0.06em] leading-none whitespace-nowrap';
 
                 const itemClass = `flex flex-col items-center justify-center gap-2.5 py-1.5 rounded-2xl text-center transition-all duration-200 ${
@@ -108,7 +106,7 @@ const UserLayout = ({ isVisible }) => {
                     );
                   }
 
-                  if (item.label === 'New Arrivals') {
+                  if (item.label === 'Collection') {
                     return (
                       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 22 22" fill="none">
                         <path d="M2.75 11C8.49567 11 11 8.58275 11 2.75C11 8.58275 13.4869 11 19.25 11C13.4869 11 11 13.4869 11 19.25C11 13.4869 8.49567 11 2.75 11Z" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>

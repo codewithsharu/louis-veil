@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { openPhoneAuthModal } from '../../redux/slices/authSlice'
@@ -37,8 +37,8 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
 
     const handleCheckout = () => {
         toggleCartDrawer()
+        navigate('/checkout')
         if (!user) dispatch(openPhoneAuthModal({ redirectPath: '/checkout' }))
-        else navigate('/checkout')
     }
 
     const handleApply = () => {
