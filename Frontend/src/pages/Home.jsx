@@ -37,6 +37,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Hero />
       <FeaturedCollection />
+      <NewArrivals />
       {/* five category strips */}
       <CategoryStrip title="Earrings" folderName="Earrings" />
       <CategoryStrip title="Lockets" folderName="Lockets" />
@@ -45,7 +46,6 @@ const Home = () => {
       <CategoryStrip title="Combo" folderName="Combo" />
       {/* <Team /> */}
       {/* <GenderCollectionSection /> */}
-      {/* <NewArrivals /> */}
       {/* <MiddleAttractionBanner /> */}
       {/* <Thriftstore /> */}
       {/* <CategoriesSection /> */}

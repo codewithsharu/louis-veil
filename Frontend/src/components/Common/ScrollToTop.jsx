@@ -2,11 +2,21 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
+    }
+
+    if (hash) {
+      requestAnimationFrame(() => {
+        const target = document.querySelector(hash);
+        if (target) {
+          target.scrollIntoView({ behavior: "auto", block: "start" });
+        }
+      });
+      return;
     }
 
     // Reset page scroll and known custom scroll containers on route change.
@@ -24,7 +34,7 @@ const ScrollToTop = () => {
         node.scrollTop = 0;
       });
     });
-  }, [pathname, search]);
+  }, [pathname, search, hash]);
 
   return null;
 };

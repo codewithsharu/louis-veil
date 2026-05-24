@@ -11,7 +11,7 @@ const categories = [
 
 const CategoriesSection = () => {
   return (
-    <section className="bg-lv-cream/40 py-10 md:py-12 px-4">
+    <section id="categories-section" className="bg-lv-cream/40 py-10 md:py-12 px-4 scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-7">
           <p className="text-xs tracking-[0.3em] uppercase text-lv-gold mb-2">Categories</p>

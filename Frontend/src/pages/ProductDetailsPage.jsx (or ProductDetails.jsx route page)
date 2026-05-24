@@ -1,0 +1,34 @@
+import React, { useEffect, useState } from 'react';
+import PageLoader from '../components/Common/PageLoader';
+
+const ProductDetailsPage = () => {
+    const [loading, setLoading] = useState(true);
+    const [productDetails, setProductDetails] = useState(null);
+
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+            setLoading(true);
+            // Simulate fetching data
+            const response = await fetch('/api/product-details');
+            const data = await response.json();
+            setProductDetails(data);
+            setLoading(false);
+        };
+
+        fetchProductDetails();
+    }, []);
+
+    if (loading) {
+        return <PageLoader />;
+    }
+
+    return (
+        <div>
+            <h1>{productDetails.name}</h1>
+            <p>{productDetails.description}</p>
+            {/* Additional product details rendering */}
+        </div>
+    );
+};
+
+export default ProductDetailsPage;

@@ -114,7 +114,7 @@ const NewArrivals = () => {
   };
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section id="new-arrivals-section" className="py-12 md:py-16 bg-white scroll-mt-24">
       {/* Header */}
       <div className="text-center mb-5 md:mb-8 px-4">
         <p className="text-xs tracking-[0.3em] uppercase text-lv-gold mb-2">Latest Collection</p>

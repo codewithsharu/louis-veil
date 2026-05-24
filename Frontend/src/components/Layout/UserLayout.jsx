@@ -14,11 +14,12 @@ const UserLayout = ({ isVisible }) => {
   const { user } = useSelector((state) => state.auth);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const activePath = location.pathname;
+  const activeHash = location.hash;
 
   const bottomNavItems = [
     { to: user ? '/profile' : null, label: 'Profile', icon: 'fa-user', action: 'profile' },
-    { to: '/collections/all', label: 'Category', icon: 'fa-th-large' },
-    { to: '/collections/all', label: 'New Arrivals', icon: 'fa-sparkles' },
+    { to: '/#categories-section', label: 'Category', icon: 'fa-th-large' },
+    { to: '/#new-arrivals-section', label: 'New Arrivals', icon: 'fa-sparkles' },
     { to: '/wishlist', label: 'Wishlist', icon: 'fa-heart' },
   ];
 
@@ -69,8 +70,13 @@ const UserLayout = ({ isVisible }) => {
           <div className="border-t border-black/10 bg-white px-2 pb-[max(1.1rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_28px_rgba(0,0,0,0.10)]">
             <div className="grid grid-cols-4 gap-0">
               {bottomNavItems.map((item) => {
+                const hasHashTarget = Boolean(item.to && item.to.includes('#'));
+                const targetPath = hasHashTarget ? item.to.split('#')[0] || '/' : item.to;
+                const targetHash = hasHashTarget ? `#${item.to.split('#')[1] || ''}` : '';
                 const isActive = item.to
-                  ? activePath === item.to || (item.to !== '/' && activePath.startsWith(item.to))
+                  ? (hasHashTarget
+                    ? activePath === targetPath && activeHash === targetHash
+                    : activePath === targetPath || (targetPath !== '/' && activePath.startsWith(targetPath)))
                   : activePath.startsWith('/profile');
 
                 const isNewArrivals = item.label === 'New Arrivals';
