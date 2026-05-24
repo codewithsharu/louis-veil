@@ -131,22 +131,25 @@ const Hero = () => {
           justify-content: center;
           gap: 10px;
           padding: 13px 28px;
-          background: rgba(43,29,18,0.06);
+          background: rgba(255,255,255,0.24);
           color: #111111;
           font-size: 12px;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           font-weight: 500;
           border-radius: 6px;
-          border: 1px solid rgba(43,29,18,0.28);
+          border: 1px solid rgba(255,255,255,0.42);
           cursor: pointer;
           white-space: nowrap;
           text-decoration: none;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.18);
           transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
         }
         .lv-btn-ghost:hover {
-          background: rgba(43,29,18,0.13);
-          border-color: rgba(43,29,18,0.5);
+          background: rgba(255,255,255,0.36);
+          border-color: rgba(255,255,255,0.62);
           color: #000000;
         }
 
@@ -156,22 +159,25 @@ const Hero = () => {
           align-items: center;
           gap: 10px;
           padding: 13px 28px;
-          background: rgba(43,29,18,0.06);
+          background: rgba(255,255,255,0.24);
           color: #111111;
           font-size: 12px;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           font-weight: 500;
           border-radius: 6px;
-          border: 1px solid rgba(43,29,18,0.28);
+          border: 1px solid rgba(255,255,255,0.42);
           cursor: pointer;
           white-space: nowrap;
           text-decoration: none;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.14);
           transition: background 0.22s ease, border-color 0.22s ease;
         }
         .lv-btn-ghost-beige:hover {
-          background: rgba(43,29,18,0.13);
-          border-color: rgba(43,29,18,0.5);
+          background: rgba(255,255,255,0.36);
+          border-color: rgba(255,255,255,0.62);
           color: #000000;
         }
 
