@@ -848,6 +848,30 @@ router.patch("/addresses/:addressId/default", protect, async (req, res) => {
     }
 });
 
+// Clear default address
+router.delete("/addresses/:addressId/default", protect, async (req, res) => {
+    try {
+        const { addressId } = req.params;
+        const user = await User.findById(req.user._id).select("savedAddresses");
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        const target = user.savedAddresses.id(addressId);
+        if (!target) {
+            return res.status(404).json({ msg: "Address not found" });
+        }
+
+        target.isDefault = false;
+        await user.save();
+
+        res.status(200).json({ msg: "Default address cleared", addresses: sortAddresses(user.savedAddresses || []) });
+    } catch (error) {
+        console.error("Clear Default Address Error:", error.message);
+        res.status(500).json({ msg: "Server Error" });
+    }
+});
+
 // Delete an address
 router.delete("/addresses/:addressId", protect, async (req, res) => {
     try {
