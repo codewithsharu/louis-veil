@@ -36,7 +36,7 @@ const UserLayout = ({ isVisible }) => {
         <Header/>
         
         {/* Main content */}
-        <main>
+        <main className="pt-2 md:pt-3">
           <Outlet/>
         </main>
         {/* Footer */}
