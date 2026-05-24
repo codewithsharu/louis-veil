@@ -1,0 +1,178 @@
+/* ./src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Funnel+Display:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base font choices: Montserrat for body, Playfair Display for headings */
+:root{
+  --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-heading: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-product: "Funnel Display", "Montserrat", system-ui, sans-serif;
+}
+
+#root{
+  font-family: var(--font-body);
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+/* Utility classes for luxury typography and accents */
+.font-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.font-product {
+  font-family: var(--font-product) !important;
+}
+.gold-accent {
+  --gold: #b8894a;
+}
+.gold-border {
+  box-shadow: inset 0 -2px 0 0 var(--gold, #b8894a);
+}
+.gold-btn {
+  background: linear-gradient(180deg, #3b2b1e, #2d2116);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 24px rgba(184, 137, 74, 0.18);
+}
+
+/* Featured collection specific sizing to match reference */
+.featured-card {
+  max-width: 380px;
+}
+.featured-image {
+  height: 360px;
+}
+
+@media (max-width: 768px) {
+  .featured-card { max-width: 100%; }
+  .featured-image { height: 260px; }
+}
+
+.featured-footer {
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Desktop adjustments to reduce oversized hero and tweak curve */
+@media (min-width: 1024px) {
+  .hero-inner {
+    transform: scale(0.92);
+    transform-origin: center top;
+  }
+
+  /* Remove large rounded top on desktop for a more refined straight edge */
+  .no-large-curve {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+}
+
+/* ── Luxury logo animation ── */
+@keyframes lv-reveal {
+  0% { opacity: 0; letter-spacing: 0.35em; }
+  100% { opacity: 1; letter-spacing: 0.08em; }
+}
+@keyframes lv-gold-line {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+.lv-logo-animate {
+  animation: lv-reveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.lv-logo-line {
+  animation: lv-gold-line 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
+}
+
+/* Order confirmation animations */
+@keyframes oc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes oc-rise-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes oc-badge-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes oc-check-reveal {
+  from {
+    stroke-dashoffset: 80;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes oc-cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+}
+
+.oc-page-enter {
+  animation: oc-fade-in 0.35s ease-out both;
+}
+
+.oc-rise-up {
+  opacity: 0;
+  animation: oc-rise-up 0.55s ease-out forwards;
+}
+
+.oc-success-badge {
+  border-radius: 9999px;
+  background: linear-gradient(145deg, #fff5da, #f2d89c);
+  box-shadow: 0 8px 24px rgba(184, 145, 70, 0.28);
+  padding: 0.45rem;
+  animation: oc-badge-pop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+
+.oc-checkmark path {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: oc-check-reveal 0.65s ease-out 0.35s forwards;
+}
+
+.oc-cta-pulse {
+  animation: oc-cta-pulse 2s ease-in-out 0.7s infinite;
+}
+
+/* Hide native scrollbars where we want a clean look (used on filter sidebar) */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

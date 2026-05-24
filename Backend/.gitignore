@@ -1,0 +1,7 @@
+node_modules
+
+# Local and production environment files (must stay off git)
+.env
+.env.*
+.1env
+!.env.example
