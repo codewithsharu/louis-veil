@@ -37,7 +37,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Hero />
       <FeaturedCollection />
-      <NewArrivals />
+      {/* <NewArrivals /> */}
       {/* five category strips */}
       <CategoryStrip title="Earrings" folderName="Earrings" />
       <CategoryStrip title="Lockets" folderName="Lockets" />
