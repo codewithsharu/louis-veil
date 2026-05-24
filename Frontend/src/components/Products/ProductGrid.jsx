@@ -43,9 +43,22 @@ const ProductGrid = ({ products, loading, error, oneRowOnMobile = false }) => {
     );
   }
 
-  const getDiscount = (price, discountPrice) => {
-    if (!price || !discountPrice || price <= discountPrice) return null;
-    return Math.round(((price - discountPrice) / price) * 100);
+  const getPricing = (product) => {
+    const originalPrice = Number(product?.originalPrice ?? product?.price ?? product?.mrp ?? 0);
+    const sellingPrice = Number(product?.sellingPrice ?? product?.discountPrice ?? product?.price ?? 0);
+    const hasDiscount = Number.isFinite(originalPrice)
+      && Number.isFinite(sellingPrice)
+      && originalPrice > 0
+      && sellingPrice > 0
+      && originalPrice > sellingPrice;
+
+    const discountValue = hasDiscount ? ((originalPrice - sellingPrice) / originalPrice) * 100 : null;
+
+    return {
+      originalPrice: hasDiscount ? originalPrice : sellingPrice,
+      sellingPrice: hasDiscount ? sellingPrice : originalPrice,
+      discount: discountValue === null ? null : (discountValue >= 1 ? Math.round(discountValue) : Number(discountValue.toFixed(1))),
+    };
   };
 
   const isWishlisted = (productId) =>
@@ -105,7 +118,7 @@ const ProductGrid = ({ products, loading, error, oneRowOnMobile = false }) => {
       <div className="w-full">
       <div className={layoutClassName} style={oneRowOnMobile ? { scrollSnapType: 'x proximity' } : undefined}>
         {products.map((product, index) => {
-          const discount = getDiscount(product.price, product.discountPrice);
+          const { originalPrice, sellingPrice, discount } = getPricing(product);
           const displayRating = Number(product.rating) > 0 ? product.rating : 5;
           return (
             <Link
@@ -139,7 +152,7 @@ const ProductGrid = ({ products, loading, error, oneRowOnMobile = false }) => {
                 <button
                   type="button"
                   aria-label="Add to wishlist"
-                  className="absolute top-1.5 right-1.5 md:top-3 md:right-3 flex h-6 w-6 md:h-9 md:w-9 items-center justify-center rounded-full transition-transform duration-200 hover:scale-110"
+                  className={`absolute top-1.5 right-1.5 md:top-3 md:right-3 flex h-6 w-6 md:h-9 md:w-9 items-center justify-center rounded-full transition-transform duration-200 hover:scale-110 ${isWishlisted(product._id) ? 'bg-white/95 shadow-[0_2px_10px_rgba(0,0,0,0.16)]' : 'bg-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.12)]'}`}
                   onClick={(event) => handleWishlistClick(event, product._id)}
                 >
                   <svg
@@ -147,7 +160,7 @@ const ProductGrid = ({ products, loading, error, oneRowOnMobile = false }) => {
                     width="14"
                     height="14"
                     className="md:!w-[22px] md:!h-[22px]"
-                    stroke={isWishlisted(product._id) ? '#d64545' : '#000000'}
+                    stroke={isWishlisted(product._id) ? '#d64545' : '#4b3a2b'}
                     strokeWidth="2"
                     fill={isWishlisted(product._id) ? '#d64545' : 'none'}
                     strokeLinecap="round"
@@ -192,12 +205,12 @@ const ProductGrid = ({ products, loading, error, oneRowOnMobile = false }) => {
                 </div>
                 <div className="mt-0.5 md:mt-1 flex items-center gap-1 md:gap-2 flex-wrap">
                   <span className="text-[11px] md:text-[17px] font-bold text-gray-900 leading-none">
-                    ₹{product.discountPrice || product.price}
+                    ₹{Number(sellingPrice || 0).toLocaleString()}
                   </span>
-                  {discount && (
+                  {discount !== null && discount > 0 && (
                     <>
                       <span className="line-through text-[9px] md:text-[12px] text-gray-400 leading-none">
-                        ₹{product.price}
+                        ₹{Number(originalPrice || 0).toLocaleString()}
                       </span>
                       <span
                         className="rounded-full px-1.5 py-0.5 md:px-2.5 md:py-1 text-[8px] md:text-[11px] font-semibold leading-none"

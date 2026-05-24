@@ -64,9 +64,22 @@ const NewArrivals = () => {
     };
   }, [newArrivals]);
 
-  const getDiscount = (price, discountPrice) => {
-    if (!price || !discountPrice || price <= discountPrice) return null;
-    return Math.round(((price - discountPrice) / price) * 100);
+  const getPricing = (product) => {
+    const originalPrice = Number(product?.originalPrice ?? product?.price ?? product?.mrp ?? 0);
+    const sellingPrice = Number(product?.sellingPrice ?? product?.discountPrice ?? product?.price ?? 0);
+    const hasDiscount = Number.isFinite(originalPrice)
+      && Number.isFinite(sellingPrice)
+      && originalPrice > 0
+      && sellingPrice > 0
+      && originalPrice > sellingPrice;
+
+    const discountValue = hasDiscount ? ((originalPrice - sellingPrice) / originalPrice) * 100 : null;
+
+    return {
+      originalPrice: hasDiscount ? originalPrice : sellingPrice,
+      sellingPrice: hasDiscount ? sellingPrice : originalPrice,
+      discount: discountValue === null ? null : (discountValue >= 1 ? Math.round(discountValue) : Number(discountValue.toFixed(1))),
+    };
   };
 
   const isWishlisted = (productId) =>
@@ -153,8 +166,8 @@ const NewArrivals = () => {
                 </div>
               ))
             : newArrivals.map((product) => {
-                const discount = getDiscount(product.price, product.discountPrice);
-              const displayRating = Number(product.rating) > 0 ? product.rating : 5;
+                const { originalPrice, sellingPrice, discount } = getPricing(product);
+                const displayRating = Number(product.rating) > 0 ? product.rating : 5;
                 return (
                   <Link
                     key={product._id}
@@ -178,10 +191,10 @@ const NewArrivals = () => {
                       <button
                         type="button"
                         aria-label="Add to wishlist"
-                        className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-white transition-transform duration-300 hover:scale-105"
+                        className={`absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 hover:scale-105 ${isWishlisted(product._id) ? 'bg-white/95 shadow-[0_2px_10px_rgba(0,0,0,0.16)]' : 'bg-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.12)]'}`}
                         onClick={(event) => handleWishlistClick(event, product._id)}
                       >
-                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1.5 2.5" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke={isWishlisted(product._id) ? '#d64545' : '#4b3a2b'} strokeWidth="2" fill={isWishlisted(product._id) ? '#d64545' : 'none'} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={isWishlisted(product._id) ? 'none' : '1.5 2.5'} aria-hidden="true">
                           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                         </svg>
                       </button>
@@ -203,10 +216,10 @@ const NewArrivals = () => {
                         {product.name}
                       </h3>
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
-                          <span className="text-[15px] font-semibold text-[#1f1610]">₹{product.discountPrice || product.price}</span>
-                        {discount && (
+                          <span className="text-[15px] font-semibold text-[#1f1610]">₹{Number(sellingPrice || 0).toLocaleString()}</span>
+                        {discount !== null && discount > 0 && (
                           <>
-                            <span className="text-[#a79b8d] line-through text-[11px]">₹{product.price}</span>
+                            <span className="text-[#a79b8d] line-through text-[11px]">₹{Number(originalPrice || 0).toLocaleString()}</span>
                             <span className="rounded-full bg-[#f4ecdf] px-2 py-0.5 text-[10px] font-medium text-[#8b6a4a]">{discount}% OFF</span>
                           </>
                         )}
