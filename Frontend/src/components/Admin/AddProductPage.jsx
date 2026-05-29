@@ -116,7 +116,7 @@ const AddProductPage = () => {
     <div className="mx-auto w-full max-w-[1450px] space-y-5">
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Add New Product</h1>
-        <p className="mt-1 text-sm text-slate-600">Fill in the details to create a new jewellery product in your inventory.</p>
+        <p className="mt-1 text-sm text-slate-600">Fill in the details to create a new jewelry product in your inventory.</p>
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
