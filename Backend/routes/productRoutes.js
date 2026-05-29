@@ -9,14 +9,11 @@ const {
 const router = express.Router();
 
 const DEFAULT_ALLOWED_COLLECTIONS = [
-    "Dresses",
-    "Leather items",
-    "Saree",
-    "Lehenga",
-    "Western Dresses",
-    "Co-ords",
-    "Top Wear",
-    "Bottom Wear",
+    "Earrings",
+    "Lockets",
+    "Bracelets",
+    "Pendants",
+    "Combo",
 ];
 
 const getAllowedCollections = () => {
@@ -181,10 +178,10 @@ router.post("/", protect, admin, async (req, res) => {
             isFeatured,
             isPublished,
             tags,
+            keywords,
             dimensions,
             weight,
             sku,
-            thrift, // Add this line
         } = req.body;
 
         const product = new Product({
@@ -195,19 +192,19 @@ router.post("/", protect, admin, async (req, res) => {
             countInStock,
             category,
             brand,
-            sizes,
-            colors,
+            sizes: Array.isArray(sizes) && sizes.length ? sizes : ["One Size"],
+            colors: Array.isArray(colors) ? colors : [],
             collections,
             material,
-            gender,
+            gender: gender || "Unisex",
             images,
             isFeatured,
             isPublished,
             tags,
+            keywords: Array.isArray(keywords) ? keywords : [],
             dimensions,
             weight,
             sku,
-            thrift, // Add this line
             user: req.user._id,
         });
 
@@ -245,32 +242,32 @@ router.put("/:id", protect, admin, async (req, res) => {
                 isFeatured,
                 isPublished,
                 tags,
+                keywords,
                 dimensions,
                 weight,
                 sku,
-                thrift, // Add this line
             } = req.body;
 
-            product.name = name || product.name;
-            product.description = description || product.description;
-            product.price = price || product.price;
-            product.discountPrice = discountPrice || product.discountPrice;
-            product.countInStock = countInStock || product.countInStock;
-            product.category = category || product.category;
-            product.brand = brand || product.brand;
-            product.sizes = sizes || product.sizes;
-            product.colors = colors || product.colors;
-            product.collections = collections || product.collections;
-            product.material = material || product.material;
-            product.gender = gender || product.gender;
-            product.images = images || product.images;
+            product.name = name ?? product.name;
+            product.description = description ?? product.description;
+            product.price = price ?? product.price;
+            product.discountPrice = discountPrice ?? product.discountPrice;
+            product.countInStock = countInStock ?? product.countInStock;
+            product.category = category ?? product.category;
+            product.brand = brand ?? product.brand;
+            product.sizes = sizes ?? product.sizes;
+            product.colors = colors ?? product.colors;
+            product.collections = collections ?? product.collections;
+            product.material = material ?? product.material;
+            product.gender = gender ?? product.gender;
+            product.images = images ?? product.images;
             product.isFeatured = isFeatured !== undefined ? isFeatured : product.isFeatured;
             product.isPublished = isPublished !== undefined ? isPublished : product.isPublished;
-            product.tags = tags || product.tags;
-            product.dimensions = dimensions || product.dimensions;
-            product.weight = weight || product.weight;
-            product.sku = sku || product.sku;
-            product.thrift = thrift !== undefined ? thrift : product.thrift; // Add this line
+            product.tags = tags ?? product.tags;
+            product.keywords = keywords ?? product.keywords;
+            product.dimensions = dimensions ?? product.dimensions;
+            product.weight = weight ?? product.weight;
+            product.sku = sku ?? product.sku;
 
             const updatedProduct = await product.save();
             runCatalogSyncInBackground(updatedProduct, "product_update");

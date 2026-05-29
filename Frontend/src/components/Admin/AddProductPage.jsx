@@ -1,80 +1,44 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { API_BASE_URL } from '../../utils/config';
 
-const CATEGORY_OPTIONS = [
-  'Top Wear',
-  'Bottom Wear',
-  'Saree',
-  'Lehenga',
-  'Western Dresses',
-  'Co-ords'
+const PRODUCT_TYPE_OPTIONS = [
+  'Earrings',
+  'Lockets',
+  'Bracelets',
+  'Pendants',
+  'Combo'
 ];
 
-const COLLECTION_OPTIONS = [
-  'Dresses',
-  'Leather items',
-  'Saree',
-  'Lehenga',
-  'Western Dresses',
-  'Co-ords',
-  'Top Wear',
-  'Bottom Wear'
-];
+const createInitialFormData = () => ({
+  name: '',
+  description: '',
+  price: '',
+  discountPrice: '',
+  countInStock: '',
+  sku: '',
+  category: '',
+  brand: '',
+  colors: [],
+  collections: '',
+  material: '',
+  images: [],
+  isFeatured: false,
+  isPublished: false,
+  keywords: []
+});
 
 const AddProductPage = () => {
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    discountPrice: '',
-    countInStock: '',
-    sku: '',
-    category: '',
-    brand: '',
-    sizes: [],
-    colors: [],
-    collections: '',
-    material: '',
-    gender: 'Unisex',
-    images: [],
-    isFeatured: false,
-    isPublished: false,
-    tags: [],
-    keywords: [],
-    dimensions: {
-      length: '',
-      width: '',
-      height: ''
-    },
-    weight: '',
-    thrift: false
-  });
+  const [formData, setFormData] = useState(createInitialFormData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-  };
-
-  const handleArrayInput = (e, field) => {
-    const values = e.target.value.split(',').map(item => item.trim());
-    setFormData(prev => ({
-      ...prev,
-      [field]: values
-    }));
-  };
-
-  const handleeArrayInput = (e, field) => {
-    const values = e.target.value.split(',').map(item => item.trim().toUpperCase());
-    setFormData(prev => ({
-      ...prev,
-      [field]: values
     }));
   };
 
@@ -124,8 +88,6 @@ const AddProductPage = () => {
     e.preventDefault();
     setLoading(true);
 
-    console.log("Form Data being submitted:", formData); // Debugging line
-
     try {
       const response = await fetch(`${API_BASE_URL}/api/products`, {
         method: 'POST',
@@ -143,33 +105,7 @@ const AddProductPage = () => {
       }
 
       toast.success('Product added successfully!');
-      setFormData({
-        name: '',
-        description: '',
-        price: '',
-        discountPrice: '',
-        countInStock: '',
-        sku: '',
-        category: '',
-        brand: '',
-        sizes: [],
-        colors: [],
-        collections: '',
-        material: '',
-        gender: 'Unisex',
-        images: [],
-        isFeatured: false,
-        isPublished: false,
-        tags: [],
-        keywords: [],
-        dimensions: {
-          length: '',
-          width: '',
-          height: ''
-        },
-        weight: '',
-        thrift: false
-      });
+      setFormData(createInitialFormData());
     } catch (err) {
       toast.error(err.message);
     }
@@ -180,7 +116,7 @@ const AddProductPage = () => {
     <div className="mx-auto w-full max-w-[1450px] space-y-5">
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h1 className="text-xl font-semibold text-slate-900">Add New Product</h1>
-        <p className="mt-1 text-sm text-slate-600">Fill in the details to create a new product in your inventory.</p>
+        <p className="mt-1 text-sm text-slate-600">Fill in the details to create a new jewellery product in your inventory.</p>
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -329,7 +265,7 @@ const AddProductPage = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       >
                         <option value="">Select Category</option>
-                        {CATEGORY_OPTIONS.map((category) => (
+                        {PRODUCT_TYPE_OPTIONS.map((category) => (
                           <option key={category} value={category}>{category}</option>
                         ))}
                       </select>
@@ -361,7 +297,7 @@ const AddProductPage = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       >
                         <option value="">Select Collection</option>
-                        {COLLECTION_OPTIONS.map((collection) => (
+                        {PRODUCT_TYPE_OPTIONS.map((collection) => (
                           <option key={collection} value={collection}>{collection}</option>
                         ))}
                       </select>
@@ -377,57 +313,9 @@ const AddProductPage = () => {
                         value={formData.material}
                         onChange={handleInputChange}
                         required
-                        placeholder="Enter material (e.g. Cotton, Silk, Denim)"
+                        placeholder="Enter material (e.g. Alloy, Brass, Stainless Steel)"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Gender
-                      </label>
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      >
-                        <option value="Men">Men</option>
-                        <option value="Women">Women</option>
-                        <option value="Unisex">Unisex</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Sizes
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL', '28', '30', '32', '34', '36', '38', '40', '42'].map((size) => {
-                          const isSelected = formData.sizes.includes(size);
-                          return (
-                            <button
-                              key={size}
-                              type="button"
-                              onClick={() => {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  sizes: isSelected
-                                    ? prev.sizes.filter(s => s !== size)
-                                    : [...prev.sizes, size]
-                                }));
-                              }}
-                              className={`min-w-[44px] h-10 px-3 rounded-lg text-sm font-semibold transition-all ${
-                                isSelected
-                                  ? 'bg-gray-900 text-white border border-gray-900'
-                                  : 'bg-white text-gray-700 border border-gray-300 hover:border-gray-500'
-                              }`}
-                            >
-                              {size}
-                            </button>
-                          );
-                        })}
-                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -630,24 +518,6 @@ const AddProductPage = () => {
                       <span className="ml-2 text-gray-700">Featured Product</span>
                     </label>
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.thrift}
-                        onChange={(e) => {
-                          const newValue = e.target.checked;
-                          setFormData(prev => {
-                            console.log("Thrift value changed:", newValue); // Debugging line
-                            return { ...prev, thrift: newValue };
-                          });
-                        }}
-                        className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-gray-700">Thrift Item</span>
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
@@ -683,4 +553,3 @@ const AddProductPage = () => {
 };
 
 export default AddProductPage;
-
