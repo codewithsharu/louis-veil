@@ -1,4 +1,3 @@
-import React from 'react';
 import { IoLogoInstagram } from 'react-icons/io';
 import { RiTwitterXLine } from 'react-icons/ri';
 import { TbBrandMeta } from 'react-icons/tb';
@@ -11,7 +10,6 @@ const footerShopLinks = [
   { to: "/collections/all?gender=Women&category=Top Wear", label: "Women's Top Wear" },
   { to: "/collections/all?gender=Men&category=Bottom Wear", label: "Men's Bottom Wear" },
   { to: "/collections/all?gender=Women&category=Bottom Wear", label: "Women's Bottom Wear" },
-  { to: "/thrift", label: "Thrift Collection" },
 ];
 
 const footerSupportLinks = [

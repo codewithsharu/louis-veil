@@ -11,14 +11,11 @@ const router = express.Router();
 const SHIPROCKET_VARIANT_MULTIPLIER = 10;
 
 const DEFAULT_ALLOWED_COLLECTIONS = [
-  "Dresses",
-  "Leather items",
-  "Saree",
-  "Lehenga",
-  "Western Dresses",
-  "Co-ords",
-  "Top Wear",
-  "Bottom Wear",
+  "Earrings",
+  "Lockets",
+  "Bracelets",
+  "Pendants",
+  "Combo",
 ];
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);

@@ -36,11 +36,11 @@ const productSchema = new mongoose.Schema({
     },
     sizes:{
         type:[String],
-        required:true,
+        default:["One Size"],
     },
     colors:{
         type:[String],
-        required:true,
+        default:[],
     },
     collections:{
         type:String,
@@ -52,6 +52,7 @@ const productSchema = new mongoose.Schema({
     gender:{
         type:String,
         enum:["Men","Women","Unisex"],
+        default:"Unisex",
     },
     images: [{ url: String }],
     isFeatured:{
@@ -92,10 +93,6 @@ const productSchema = new mongoose.Schema({
         height:Number
     },
     weight:Number,
-    thrift:{
-        type:Boolean,
-        default:false,
-    },
 },
 
 {timestamps: true}
