@@ -265,8 +265,8 @@ const AddProductPage = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       >
                         <option value="">Select Category</option>
-                        {PRODUCT_TYPE_OPTIONS.map((category) => (
-                          <option key={category} value={category}>{category}</option>
+                        {PRODUCT_TYPE_OPTIONS.map((productType) => (
+                          <option key={productType} value={productType}>{productType}</option>
                         ))}
                       </select>
                     </div>
@@ -297,8 +297,8 @@ const AddProductPage = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       >
                         <option value="">Select Collection</option>
-                        {PRODUCT_TYPE_OPTIONS.map((collection) => (
-                          <option key={collection} value={collection}>{collection}</option>
+                        {PRODUCT_TYPE_OPTIONS.map((productType) => (
+                          <option key={productType} value={productType}>{productType}</option>
                         ))}
                       </select>
                     </div>

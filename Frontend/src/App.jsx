@@ -35,7 +35,6 @@ import ShippingAndDelivery from "./components/support/ShippingAndDelivery";
 import PrivacyPolicy from "./components/support/PrivacyPolicy";
 import ContactUs from "./components/support/ContactUs";
 import CancellationAndRefund from "./components/support/CancellationAndRefund";
-import Thriftstore from "./pages/Thriftstore";
 import ScrollToTop from "./components/Common/ScrollToTop";
 import LouisVeilFeed from "./components/Common/LouisVeilFeed";
 import BackendConnectionCheck from "./pages/BackendConnectionCheck";
@@ -112,7 +111,6 @@ const App = () => {
     <Route path='/my-orders' element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>}/>
     <Route path='/forgot-password' element={<ForgotPassword />}/>
 
-    <Route path='/thrift' element={<Thriftstore />} />
     <Route path='/community' element={<LouisVeilFeed />} />
   </Route>
 
