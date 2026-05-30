@@ -501,7 +501,7 @@ const AdminOrdersDetailPage = () => {
                                             ? 'bg-green-100 text-green-700'
                                             : 'bg-amber-100 text-amber-700'
                                     }`}>
-                                        {(orderDetails.paymentStatus || (orderDetails.isPaid ? 'paid' : 'pending')).toUpperCase()}
+                                        {String(orderDetails.paymentStatus || (orderDetails.isPaid ? 'paid' : 'pending')).toUpperCase()}
                                     </span>
                                 </div>
                                 

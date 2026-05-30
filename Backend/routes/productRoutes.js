@@ -183,7 +183,7 @@ router.post("/", protect, admin, async (req, res) => {
             weight,
             sku,
         } = req.body;
-        const normalizedCollections = collections || category || "Jewellery";
+        const effectiveCollections = collections || category || "Jewellery";
 
         const product = new Product({
             name,
@@ -195,7 +195,7 @@ router.post("/", protect, admin, async (req, res) => {
             brand,
             sizes: Array.isArray(sizes) && sizes.length ? sizes : ["One Size"],
             colors: Array.isArray(colors) ? colors : [],
-            collections: normalizedCollections,
+            collections: effectiveCollections,
             material,
             gender: gender || "Unisex",
             images,
