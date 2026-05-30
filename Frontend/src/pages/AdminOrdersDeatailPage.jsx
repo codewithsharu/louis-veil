@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { fetchOrderDetails } from '../redux/slices/orderSlice';
-import { FiPackage, FiCreditCard, FiTruck, FiCalendar, FiArrowLeft, FiUser, FiMapPin, FiPhone } from 'react-icons/fi';
+import { updateOrderStatus } from '../redux/slices/adminOrderSlice';
+import { FiCreditCard, FiCalendar, FiArrowLeft, FiUser, FiMapPin } from 'react-icons/fi';
 import { HiOutlineDocumentText } from 'react-icons/hi';
 import { MdPayment } from 'react-icons/md';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { toast } from 'sonner';
 
 const CUSTOM_MEASUREMENT_FIELDS = [
     { key: 'bustChest', label: 'Bust/Chest' },
@@ -46,45 +48,50 @@ const getCustomMeasurementSummary = (item) => {
     }).filter(Boolean);
 };
 
+const OrderStatusOptions = {
+    Processing: 'Processing',
+    Shipped: 'Shipped',
+    Delivered: 'Delivered',
+    Cancelled: 'Cancelled',
+};
+
+const statusOrder = {
+    Processing: 1,
+    Shipped: 2,
+    Delivered: 3,
+    Cancelled: 4,
+};
+
 const AdminOrdersDetailPage = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { orderDetails, loading, error } = useSelector((state) => state.orders);
-    const [paymentStatus, setPaymentStatus] = useState(false);
-    const [deliveryStatus, setDeliveryStatus] = useState(false);
+    const [statusUpdating, setStatusUpdating] = useState(false);
     const [generatingPdf, setGeneratingPdf] = useState(false);
 
     useEffect(() => {
         dispatch(fetchOrderDetails(id));
     }, [dispatch, id]);
 
-    useEffect(() => {
-        if (orderDetails) {
-            setPaymentStatus(orderDetails.isPaid);
-            setDeliveryStatus(orderDetails.isDelivered);
+    const handleOrderStatusChange = async (status) => {
+        if (!id || !orderDetails || status === orderDetails.status) return;
+
+        try {
+            setStatusUpdating(true);
+            await dispatch(updateOrderStatus({ id, status })).unwrap();
+            await dispatch(fetchOrderDetails(id)).unwrap();
+            toast.success(`Order marked as ${status}`);
+        } catch (updateError) {
+            toast.error(updateError?.message || 'Failed to update order status');
+        } finally {
+            setStatusUpdating(false);
         }
-    }, [orderDetails]);
-
-    // Since we don't have the updateOrderStatus export, we'll handle status changes locally
-    // In a real app, you would dispatch an action to update the backend
-    const handlePaymentStatusChange = () => {
-        const newStatus = !paymentStatus;
-        setPaymentStatus(newStatus);
-        // Show a toast or notification instead of actual API call
-        console.log(`Payment status updated to: ${newStatus ? 'Paid' : 'Pending'}`);
-    };
-
-    const handleDeliveryStatusChange = () => {
-        const newStatus = !deliveryStatus;
-        setDeliveryStatus(newStatus);
-        // Show a toast or notification instead of actual API call
-        console.log(`Delivery status updated to: ${newStatus ? 'Delivered' : 'Processing'}`);
     };
 
     // Navigate to invoice page
     const handleViewInvoice = () => {
-        navigate(`/invoice/${id}`);
+        navigate(`/admin/orders/${id}/invoice`);
     };
 
     // Generate PDF invoice directly
@@ -148,11 +155,11 @@ const AdminOrdersDetailPage = () => {
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="font-medium">Payment Status:</span>
-                                    <span class="${paymentStatus ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}">
-                                        ${paymentStatus ? 'Paid' : 'Pending'}
+                                    <span class="${orderDetails.isPaid ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}">
+                                        ${orderDetails.isPaid ? 'Paid' : 'Pending'}
                                     </span>
                                 </div>
-                                ${paymentStatus && orderDetails.paidAt ? `
+                                ${orderDetails.isPaid && orderDetails.paidAt ? `
                                 <div class="flex justify-between">
                                     <span class="font-medium">Paid Date:</span>
                                     <span>${new Date(orderDetails.paidAt).toLocaleDateString('en-US', {
@@ -335,9 +342,10 @@ const AdminOrdersDetailPage = () => {
     );
 
     const orderDate = new Date(orderDetails.createdAt);
-    const estimatedDeliveryDate = new Date(orderDate);
-    estimatedDeliveryDate.setDate(orderDate.getDate() + Math.floor(Math.random() * (7 - 3 + 1) + 3));
     const orderItems = orderDetails.orderItems || orderDetails.items || [];
+    const currentStatus = orderDetails.status || OrderStatusOptions.Processing;
+    const isFinalStatus =
+        currentStatus === OrderStatusOptions.Delivered || currentStatus === OrderStatusOptions.Cancelled;
 
     // Calculate subtotal
     const subtotal = orderItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 0)), 0);
@@ -491,32 +499,34 @@ const AdminOrdersDetailPage = () => {
                                         <MdPayment className="mr-2 text-lg text-gray-600" />
                                         <span className="text-sm font-medium text-gray-700">Payment Status</span>
                                     </div>
-                                    <button
-                                        onClick={handlePaymentStatusChange}
-                                        className={`px-3 py-1 text-xs font-medium transition-colors ${
-                                            paymentStatus 
-                                                ? 'bg-green-100 text-indigo-600 hover:bg-green-200' 
-                                                : 'bg-red-100 text-red-800 hover:bg-red-200'
-                                        }`}
-                                    >
-                                        {paymentStatus ? 'Paid' : 'Pending'}
-                                    </button>
+                                    <span className={`px-3 py-1 text-xs font-medium uppercase ${
+                                        orderDetails.paymentStatus === 'paid' || orderDetails.isPaid
+                                            ? 'bg-green-100 text-green-700'
+                                            : 'bg-amber-100 text-amber-700'
+                                    }`}>
+                                        {String(orderDetails.paymentStatus || (orderDetails.isPaid ? 'paid' : 'pending')).toUpperCase()}
+                                    </span>
                                 </div>
                                 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center">
                                         <FiCalendar className="mr-2 text-gray-600" />
-                                        <span className="text-sm font-medium text-gray-700">Expected Delivery</span>
+                                        <span className="text-sm font-medium text-gray-700">Order Status</span>
                                     </div>
-                                    <span className="text-sm text-gray-600">
-                                        {deliveryStatus 
-                                            ? 'Delivered' 
-                                            : estimatedDeliveryDate.toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric'
-                                              })
-                                        }
-                                    </span>
+                                    <select
+                                        className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                                        value={currentStatus}
+                                        onChange={(e) => handleOrderStatusChange(e.target.value)}
+                                        disabled={statusUpdating || isFinalStatus}
+                                    >
+                                        {(isFinalStatus ? [currentStatus] : Object.values(OrderStatusOptions)
+                                            .filter((status) => (statusOrder[status] || 0) >= (statusOrder[currentStatus] || 0)))
+                                            .map((status) => (
+                                                <option key={status} value={status}>
+                                                    {status}
+                                                </option>
+                                            ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -585,5 +595,3 @@ const AdminOrdersDetailPage = () => {
 };
 
 export default AdminOrdersDetailPage;
-
-

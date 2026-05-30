@@ -18,10 +18,6 @@ const createInitialFormData = () => ({
   countInStock: '',
   sku: '',
   category: '',
-  brand: '',
-  colors: [],
-  collections: '',
-  material: '',
   images: [],
   isFeatured: false,
   isPublished: false,
@@ -89,13 +85,18 @@ const AddProductPage = () => {
     setLoading(true);
 
     try {
+      const payload = {
+        ...formData,
+        collections: formData.category || 'Uncategorized'
+      };
+
       const response = await fetch(`${API_BASE_URL}/api/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('userToken')}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
@@ -241,7 +242,7 @@ const AddProductPage = () => {
                     </label>
                     <input
                       type="text"
-                      placeholder="Enter keywords separated by commas (e.g. western, dress, casual)"
+                      placeholder="Enter keywords separated by commas (e.g. gold, bridal, daily wear)"
                       value={Array.isArray(formData.keywords) ? formData.keywords.join(', ') : (formData.keywords || '')}
                       onChange={(e) => {
                         const values = e.target.value.split(',').map(item => item.trim()).filter(Boolean);
@@ -252,7 +253,7 @@ const AddProductPage = () => {
                     <p className="text-xs text-gray-500">These keywords help customers find this product via the search bar.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6">
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">
                         Category
@@ -269,165 +270,6 @@ const AddProductPage = () => {
                           <option key={productType} value={productType}>{productType}</option>
                         ))}
                       </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Brand
-                      </label>
-                      <input
-                        type="text"
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleInputChange}
-                        placeholder="Enter brand name"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Collection
-                      </label>
-                      <select
-                        name="collections"
-                        value={formData.collections}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      >
-                        <option value="">Select Collection</option>
-                        {PRODUCT_TYPE_OPTIONS.map((productType) => (
-                          <option key={productType} value={productType}>{productType}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Material
-                      </label>
-                      <input
-                        type="text"
-                        name="material"
-                        value={formData.material}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Enter material (e.g. Alloy, Brass, Stainless Steel)"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Colors
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {[
-                          { name: 'Red', hex: '#EF4444' },
-                          { name: 'Blue', hex: '#3B82F6' },
-                          { name: 'Black', hex: '#111827' },
-                          { name: 'White', hex: '#FFFFFF' },
-                          { name: 'Green', hex: '#16A34A' },
-                          { name: 'Yellow', hex: '#EAB308' },
-                          { name: 'Pink', hex: '#EC4899' },
-                          { name: 'Gray', hex: '#9CA3AF' },
-                          { name: 'Navy', hex: '#1E3A5F' },
-                          { name: 'Beige', hex: '#D2B48C' },
-                          { name: 'Brown', hex: '#92400E' },
-                          { name: 'Purple', hex: '#7C3AED' },
-                          { name: 'Orange', hex: '#F97316' },
-                          { name: 'Maroon', hex: '#7F1D1D' },
-                        ].map((color) => {
-                          const colorEntry = `${color.name}:${color.hex}`;
-                          const isSelected = formData.colors.some(c => c === color.name || c === colorEntry || c.startsWith(color.name + ':#'));
-                          return (
-                            <button
-                              key={color.name}
-                              type="button"
-                              onClick={() => {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  colors: isSelected
-                                    ? prev.colors.filter(c => c !== color.name && c !== colorEntry && !c.startsWith(color.name + ':#'))
-                                    : [...prev.colors, colorEntry]
-                                }));
-                              }}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
-                                isSelected
-                                  ? 'border-black bg-gray-900 text-white'
-                                  : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                              }`}
-                            >
-                              <span
-                                className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
-                                style={{ backgroundColor: color.hex }}
-                              />
-                              {color.name}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {formData.colors.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          <span className="text-xs text-gray-500 self-center">Selected:</span>
-                          {formData.colors.map((c) => {
-                            const colonHashIdx = c.lastIndexOf(':#');
-                            const colorName = colonHashIdx > 0 ? c.substring(0, colonHashIdx) : c;
-                            const colorHex = colonHashIdx > 0 ? c.substring(colonHashIdx + 1) : c;
-                            return (
-                              <span key={c} className="flex items-center gap-1 bg-white border border-gray-200 rounded-full px-2 py-0.5">
-                                <span
-                                  className="w-3.5 h-3.5 rounded-full border border-gray-300 flex-shrink-0"
-                                  style={{ backgroundColor: colorHex }}
-                                />
-                                <span className="text-xs font-medium text-gray-700">{colorName}</span>
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {/* Add Custom Color */}
-                      <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                        <p className="text-xs font-medium text-gray-500 mb-2">Add Custom Color</p>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            placeholder="Color name"
-                            id="addCustomColorName"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                          <input
-                            type="color"
-                            id="addCustomColorHex"
-                            defaultValue="#000000"
-                            className="w-10 h-10 border border-gray-200 cursor-pointer p-0.5 rounded"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const nameInput = document.getElementById('addCustomColorName');
-                              const hexInput = document.getElementById('addCustomColorHex');
-                              const name = nameInput.value.trim();
-                              const hex = hexInput.value;
-                              if (name) {
-                                const colorEntry = `${name}:${hex}`;
-                                const alreadyAdded = formData.colors.some(c => c === name || c.startsWith(name + ':#'));
-                                if (!alreadyAdded) {
-                                  setFormData(prev => ({
-                                    ...prev,
-                                    colors: [...prev.colors, colorEntry]
-                                  }));
-                                  nameInput.value = '';
-                                }
-                              }
-                            }}
-                            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-                          >
-                            Add
-                          </button>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
