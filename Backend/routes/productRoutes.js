@@ -183,7 +183,7 @@ router.post("/", protect, admin, async (req, res) => {
             weight,
             sku,
         } = req.body;
-        const effectiveCollections = collections || category || "Jewellery";
+        const effectiveCollections = collections || category || "Uncategorized";
 
         const product = new Product({
             name,

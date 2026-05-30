@@ -87,7 +87,7 @@ const AddProductPage = () => {
     try {
       const payload = {
         ...formData,
-        collections: formData.category || 'Jewellery'
+        collections: formData.category || 'Uncategorized'
       };
 
       const response = await fetch(`${API_BASE_URL}/api/products`, {
