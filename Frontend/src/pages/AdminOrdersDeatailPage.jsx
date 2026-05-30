@@ -59,7 +59,7 @@ const statusOrder = {
     Processing: 1,
     Shipped: 2,
     Delivered: 3,
-    Cancelled: 3,
+    Cancelled: 4,
 };
 
 const AdminOrdersDetailPage = () => {
@@ -343,6 +343,9 @@ const AdminOrdersDetailPage = () => {
 
     const orderDate = new Date(orderDetails.createdAt);
     const orderItems = orderDetails.orderItems || orderDetails.items || [];
+    const currentStatus = orderDetails.status || OrderStatusOptions.Processing;
+    const isFinalStatus =
+        currentStatus === OrderStatusOptions.Delivered || currentStatus === OrderStatusOptions.Cancelled;
 
     // Calculate subtotal
     const subtotal = orderItems.reduce((acc, item) => acc + (Number(item.price || 0) * Number(item.quantity || 0)), 0);
@@ -512,12 +515,12 @@ const AdminOrdersDetailPage = () => {
                                     </div>
                                     <select
                                         className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                                        value={orderDetails.status || OrderStatusOptions.Processing}
+                                        value={currentStatus}
                                         onChange={(e) => handleOrderStatusChange(e.target.value)}
-                                        disabled={statusUpdating}
+                                        disabled={statusUpdating || isFinalStatus}
                                     >
-                                        {Object.values(OrderStatusOptions)
-                                            .filter((status) => (statusOrder[status] || 0) >= (statusOrder[orderDetails.status] || 0))
+                                        {(isFinalStatus ? [currentStatus] : Object.values(OrderStatusOptions)
+                                            .filter((status) => (statusOrder[status] || 0) >= (statusOrder[currentStatus] || 0)))
                                             .map((status) => (
                                                 <option key={status} value={status}>
                                                     {status}
